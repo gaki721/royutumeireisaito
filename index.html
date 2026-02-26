@@ -1,0 +1,335 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.1">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="ja"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;露出命令サイト&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>:root { --bg: #050505; --card: #121212; --text: #ffffff; --accent: #ff003c; --safe: #00d2ff; --prep: #bc13fe; --warning: #ffcc00; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; -webkit-user-select: none; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.card { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid #333; width: 100%; max-width: 500px; box-shadow: 0 15px 50px rgba(0,0,0,0.9); box-sizing: border-box; margin-top: 10px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>h1 { color: var(--accent); text-align: center; font-size: 1.8rem; letter-spacing: 3px; margin-bottom: 25px; text-shadow: 0 0 15px var(--accent); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>h2 { color: var(--text); text-align: center; font-size: 1.2rem; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.hidden { display: none !important; }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* フォーム要素 */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 0.85rem; color: #888; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>input, select { width: 100%; padding: 16px; margin-bottom: 20px; border-radius: 12px; border: 1px solid #444; background: #000; color: #fff; font-size: 1rem; box-sizing: border-box; }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* ボタン群 */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>button { width: 100%; padding: 22px; border-radius: 15px; border: none; font-weight: bold; cursor: pointer; font-size: 1.2rem; transition: 0.3s active; margin-top: 10px; touch-action: manipulation; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>button:active { transform: scale(0.96); opacity: 0.8; }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-main { background: var(--accent); color: white; box-shadow: 0 5px 15px rgba(255, 0, 60, 0.4); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-prep { background: var(--prep); color: white; border: 3px solid #fff; animation: pulse 1.5s infinite; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-photo { background: var(--safe); color: white; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-retire { background: #2b0000; color: var(--accent); border: 1px solid var(--accent); font-size: 1rem; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-disabled { background: #222; color: #555; cursor: not-allowed; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>@keyframes pulse { 0% { box-shadow: 0 0 0 0px rgba(188, 19, 254, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(188, 19, 254, 0); } 100% { box-shadow: 0 0 0 0px rgba(188, 19, 254, 0); } }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* カウントダウン */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#wait-timer { font-size: 4rem; text-align: center; color: var(--accent); font-weight: 900; font-family: 'Courier New', monospace; margin: 30px 0; }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* タスク表示 */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.type-badge { display: inline-block; padding: 6px 16px; border-radius: 8px; font-weight: bold; margin-bottom: 20px; font-size: 1.1rem; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.type-wait { background: #004d00; color: #00ff00; border: 1px solid #00ff00; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.type-photo { background: #003366; color: #00d2ff; border: 1px solid #00d2ff; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#task-body { font-size: 1.5rem; font-weight: bold; line-height: 1.4; margin-bottom: 30px; min-height: 100px; text-align: center; color: #fff; }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* 危険度バー */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.danger-wrap { margin: 20px 0; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.danger-meta { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: bold; margin-bottom: 5px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.danger-bar-bg { width: 100%; height: 14px; background: #222; border-radius: 7px; overflow: hidden; border: 1px solid #333; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#danger-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #00ff00, #ffff00, #ff0000); transition: 1s cubic-bezier(0.17, 0.67, 0.83, 0.67); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* ステータス */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.stat-box { background: #1a1a1a; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #222; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.stat-label { font-size: 0.75rem; color: #777; margin-bottom: 5px; display: block; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.stat-num { font-size: 1.6rem; font-weight: bold; color: var(--warning); font-family: monospace; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* ログ */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.log-container { margin-top: 25px; max-height: 300px; overflow-y: auto; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.log-entry { padding: 12px; margin-bottom: 10px; border-radius: 10px; background: #000; font-size: 0.85rem; border-left: 6px solid #444; line-height: 1.4; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.log-ok { border-left-color: var(--safe); color: #fff; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.log-ng { border-left-color: var(--accent); color: #ff99aa; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card" id="scr-setup"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h1&gt;露出命令サイト&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;label&gt;遂行地点&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="text" id="in-loc" placeholder="例：〇〇公園、深夜の市街地"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;label&gt;開始定刻（設定時間までロック）&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="datetime-local" id="in-time"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;label&gt;目標クリア任務数&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;select id="in-target"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="5"&gt;5任務 (NORMAL)&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="10"&gt;10任務 (HARD)&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="20" selected&gt;20任務 (LUNATIC)&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;option value="30"&gt;30任務 (HELL)&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn-main" onclick="initSystem()"&gt;設定を確定しロックする&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card hidden" id="scr-wait"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h1&gt;ACCESS LOCKED&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div style="text-align:center; color:var(--warning); font-size:0.9rem;"&gt;作戦開始時刻まで待機せよ&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="wait-timer"&gt;00:00:00&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button id="btn-begin" class="btn-disabled" disabled onclick="startMission()"&gt;未開放&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card hidden" id="scr-mission"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="danger-wrap"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="danger-meta"&gt;&lt;span&gt;DANGER LEVEL&lt;/span&gt;&lt;span id="danger-text"&gt;1.0&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="danger-bar-bg"&gt;&lt;div id="danger-bar-fill"&gt;&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="task-view"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="text-align:center;"&gt;&lt;span id="task-type" class="type-badge"&gt;TYPE: ???&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="task-body"&gt;任務をロード中...&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="phase-prep"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button class="btn-prep" onclick="commence()"&gt;準備完了：任務を開始&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="phase-action" class="hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button id="btn-camera" class="btn-photo hidden" onclick="document.getElementById('file-in').click()"&gt;証拠を撮影・提出&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="file" id="file-in" accept="image/*" capture="camera" class="hidden" onchange="handleFile(this)"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div id="action-timer" style="font-size: 2.2rem; text-align: center; margin: 20px 0; font-family: monospace; color: var(--accent);"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button id="btn-done" class="btn-main" onclick="reportSuccess()"&gt;任務完了を報告&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button id="btn-giveup" class="btn-retire" onclick="reportFail()"&gt;任務を断念する&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="stats-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="stat-box"&gt;&lt;span class="stat-label"&gt;COMPLETED&lt;/span&gt;&lt;span class="stat-num" id="stat-comp"&gt;0/0&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="stat-box"&gt;&lt;span class="stat-label"&gt;ELAPSED&lt;/span&gt;&lt;span class="stat-num" id="stat-time"&gt;00:00&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card hidden" id="scr-report"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="capture-area" style="background:#050505; padding:20px; border-radius:15px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h1&gt;MISSION REPORT&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="rep-info" style="text-align:center; font-size:0.9rem; color:#888; margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:10px;"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="rep-log" class="log-container"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="rep-gal" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:20px;"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="btn-main" style="background:#1da1f2;" onclick="shareX()"&gt;Xに報告を投稿（スクショ保存）&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button onclick="location.reload()" style="background:#222; margin-top:10px;"&gt;TOPへ戻る&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;script&gt;</p>
+<p class="p1">// --- 大量タスク生成ロジック ---</p>
+<p class="p1">const colors = ["赤色","青色","黄色","白","黒","赤と青以外"];</p>
+<p class="p1">const objs = ["自販機","放置自転車","軽自動車","電柱","街灯","消火栓"];</p>
+<p class="p1">const locs = ["公園","コンビニ","スーパー","駐車場","バス停"];</p>
+<p class="p2"><br></p>
+<p class="p1">function getWaitTasks() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let t = [</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{text: `周囲を警戒しながら3分間、その場を動かず留まれ`, time: 180},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{text: `服の上から乳首を弄りながら、次の車が通り過ぎるまで待機せよ`, time: 0},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{text: `下着を脱いで手に持ち、そのまま200メートル歩き続けろ`, time: 120},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{text: `全裸になり、自分の服をきれいに畳むまでそのままいろ`, time: 60},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{text: `四つん這いになり、犬の真似をして周囲を1分間徘徊せよ`, time: 60},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{text: `ガードレールに股間を押し付け、1分間その感触に耐えろ`, time: 60},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{text: `全裸で5分間オナニーを完遂せよ。絶頂は自由とする`, time: 300},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{text: `ズボンを膝まで下ろし、カニ歩きで一番近い電柱まで行け`, time: 0},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{text: `茂みに全裸で隠れ、通行人が一人通り過ぎるまで潜伏せよ`, time: 0},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{text: `パンツを頭に被り、そのまま1分間直立不動でいろ`, time: 60}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// 動的生成</p>
+<p class="p1"><span class="Apple-converted-space">    </span>colors.forEach(c =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>objs.forEach(o =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>t.push({text: `${c}の${o}を見つけるまで、服の中に手を入れて局部を弄り続けろ`, time: 0});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>t.push({text: `${c}の${o}の影に隠れて、全裸で1分間スクワットせよ`, time: 60});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>return t;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function getPhotoTasks() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let t = [</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{text: `現在の露出状態が分かるように、周囲の情景と共に自撮りせよ`, time: 0},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{text: `スマホを設置し、全裸でM字開脚している姿を撮影せよ`, time: 0},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{text: `脱いだ下着を標識や木に引っ掛け、それを背景に自撮りせよ`, time: 0},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{text: `局部を限界まで露出させ、自販機の光を借りて接写せよ`, time: 0},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{text: `全裸で通行人の背後(10m以内)に忍び寄り、証拠写真を撮れ`, time: 0},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{text: `靴だけを履いた全裸の状態で、道路の真ん中で撮影せよ`, time: 0},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{text: `脱いだ下着を口に咥え、屈辱に耐える表情を自撮りせよ`, time: 0},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{text: `電柱にマーキング(放尿)し、その跡と局部を一緒に撮れ`, time: 0}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>locs.forEach(l =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>t.push({text: `一番近い${l}の看板の前で、下半身を露出して撮影せよ`, time: 0});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>t.push({text: `${l}の敷地境界線で全裸になり、証拠を残せ`, time: 0});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>return t;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">const masterPool = { wait: getWaitTasks(), photo: getPhotoTasks() };</p>
+<p class="p1">let m = { loc: "", target: 5, danger: 1.0, comp: 0, sec: 0, taskStart: 0, isPrep: true, history: [], photos: [], current: null, hasPhoto: false, startTS: 0 };</p>
+<p class="p2"><br></p>
+<p class="p1">// --- システムロジック ---</p>
+<p class="p1">function initSystem() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>m.loc = document.getElementById('in-loc').value || "野外某所";</p>
+<p class="p1"><span class="Apple-converted-space">    </span>m.target = parseInt(document.getElementById('in-target').value);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const timeVal = document.getElementById('in-time').value;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if(!timeVal) return alert("開始定刻を設定してください");</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>m.startTS = new Date(timeVal).getTime();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('scr-setup').classList.add('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('scr-wait').classList.remove('hidden');</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const tick = setInterval(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const diff = m.startTS - Date.now();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const btn = document.getElementById('btn-begin');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if(diff &lt;= 0) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>clearInterval(tick);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('wait-timer').innerText = "READY";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>btn.innerText = "作戦を開始する";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>btn.className = "btn-main";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>btn.disabled = false;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const h = Math.floor(diff/3600000).toString().padStart(2,'0');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const min = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const s = Math.floor((diff%60000)/1000).toString().padStart(2,'0');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('wait-timer').innerText = `${h}:${min}:${s}`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}, 1000);</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function startMission() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('scr-wait').classList.add('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('scr-mission').classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>setInterval(() =&gt; { m.sec++; updateUI(); }, 1000);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>drawTask();</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function drawTask() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>m.isPrep = true; m.hasPhoto = false;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const type = Math.random() &gt; 0.5 ? 'wait' : 'photo';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const p = masterPool[type];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const item = p.splice(Math.floor(Math.random() * p.length), 1)[0];</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>if(!item) return alert("任務が枯渇しました。終了します。");</p>
+<p class="p1"><span class="Apple-converted-space">    </span>m.current = { ...item, type: type };</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const badge = document.getElementById('task-type');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>badge.innerText = type === 'wait' ? "忍耐任務" : "撮影任務";</p>
+<p class="p1"><span class="Apple-converted-space">    </span>badge.className = `type-badge type-${type}`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('task-body').innerText = m.current.text;</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('phase-prep').classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('phase-action').classList.add('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>updateUI();</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function commence() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>m.isPrep = false; m.taskStart = m.sec;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('phase-prep').classList.add('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('phase-action').classList.remove('hidden');</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const isPhoto = m.current.type === 'photo';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('btn-camera').classList.toggle('hidden', !isPhoto);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('btn-done').classList.toggle('hidden', isPhoto);</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function handleFile(input) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if(input.files &amp;&amp; input.files[0]) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const reader = new FileReader();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>reader.onload = e =&gt; { m.photos.push(e.target.result); m.hasPhoto = true; alert("証拠を確認しました。報告可能です。"); };</p>
+<p class="p1"><span class="Apple-converted-space">        </span>reader.readAsDataURL(input.files[0]);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function updateUI() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const elap = m.sec - m.taskStart;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const rem = m.current ? m.current.time - elap : 0;</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('danger-text').innerText = m.danger.toFixed(1);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('danger-bar-fill').style.width = (m.danger * 10) + "%";</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('stat-comp').innerText = `${m.comp}/${m.target}`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('stat-time').innerText = Math.floor(m.sec/60).toString().padStart(2,'0') + ":" + (m.sec%60).toString().padStart(2,'0');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>if(!m.isPrep) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if(m.current.type === 'wait' &amp;&amp; m.current.time &gt; 0) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('action-timer').innerText = Math.max(0, rem) + "s";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(rem &lt;= 0) reportSuccess();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('action-timer').innerText = "";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function reportSuccess() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if(m.current.type === 'photo' &amp;&amp; !m.hasPhoto) return alert("証拠写真がありません");</p>
+<p class="p1"><span class="Apple-converted-space">    </span>m.history.push({ text: m.current.text, ok: true });</p>
+<p class="p1"><span class="Apple-converted-space">    </span>m.comp++;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>m.danger = Math.min(10, m.danger + 0.5);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>checkFlow();</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function reportFail() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if(!confirm("この任務を断念しますか？クリア数にカウントされず危険度が大幅に上昇します。")) return;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>m.history.push({ text: m.current.text, ok: false });</p>
+<p class="p1"><span class="Apple-converted-space">    </span>m.danger = Math.min(10, m.danger + 2.0);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>checkFlow();</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function checkFlow() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if(m.comp &gt;= m.target) finalize();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>else drawTask();</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function finalize() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('scr-mission').classList.add('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('scr-report').classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('rep-info').innerText = `場所: ${m.loc} | 最終危険度: ${m.danger.toFixed(1)} | 総クリア: ${m.comp}`;</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const log = document.getElementById('rep-log');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>m.history.forEach(h =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const d = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>d.className = `log-entry ${h.ok ? 'log-ok' : 'log-ng'}`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>d.innerText = (h.ok ? "✓ SUCCESS: " : "✕ FAILED: ") + h.text;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>log.appendChild(d);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const gal = document.getElementById('rep-gal');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>m.photos.forEach(p =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const img = document.createElement('img'); img.src = p; img.style.width="100%"; img.style.borderRadius="10px";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>gal.appendChild(img);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function shareX() {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>html2canvas(document.getElementById('capture-area')).then(canvas =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const link = document.createElement('a');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>link.download = 'mission_report.png';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>link.href = canvas.toDataURL();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>link.click();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const txt = encodeURIComponent(`露出命令サイトで作戦を完遂しました。全${m.comp}任務成功。 #露出命令サイト`);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>window.open(`https://twitter.com/intent/tweet?text=${txt}`);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1">}</p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
