@@ -4,66 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>露出命令サイト</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         :root { --bg: #050505; --card: #121212; --text: #ffffff; --accent: #ff003c; --safe: #00d2ff; --prep: #bc13fe; --warning: #ffcc00; }
-        body { font-family: 'Hiragino Kaku Gothic ProN', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        .card { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid #333; width: 100%; max-width: 500px; box-shadow: 0 15px 50px rgba(0,0,0,0.9); box-sizing: border-box; margin-top: 10px; }
-        h1 { color: var(--accent); text-align: center; font-size: 1.8rem; letter-spacing: 3px; margin-bottom: 25px; text-shadow: 0 0 10px var(--accent); }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
+        .card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid #333; width: 100%; max-width: 450px; box-sizing: border-box; margin-top: 10px; }
+        h1 { color: var(--accent); text-align: center; font-size: 1.5rem; margin-bottom: 20px; }
         .hidden { display: none !important; }
         
-        /* フォーム系 */
-        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 0.85rem; color: #888; }
-        input, select { width: 100%; padding: 16px; margin-bottom: 20px; border-radius: 12px; border: 1px solid #444; background: #000; color: #fff; font-size: 1rem; box-sizing: border-box; }
+        input, select { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #444; background: #000; color: #fff; font-size: 1rem; box-sizing: border-box; -webkit-appearance: none; }
         
-        /* ボタン系 */
-        button { width: 100%; padding: 22px; border-radius: 15px; border: none; font-weight: bold; cursor: pointer; font-size: 1.2rem; margin-top: 10px; touch-action: manipulation; transition: 0.2s; }
+        button { width: 100%; padding: 20px; border-radius: 15px; border: none; font-weight: bold; cursor: pointer; font-size: 1.1rem; margin-top: 10px; transition: 0.2s; -webkit-tap-highlight-color: transparent; }
         .btn-main { background: var(--accent); color: white; }
-        .btn-prep { background: var(--prep); color: white; border: 3px solid #fff; animation: blink 1s infinite; }
-        .btn-photo { background: var(--safe); color: white; height: 120px; font-size: 1.5rem; line-height: 1.2; }
-        .btn-retire { background: #2b0000; color: var(--accent); border: 1px solid var(--accent); font-size: 1rem; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .btn-prep { background: var(--prep); color: white; }
+        .btn-photo { background: var(--safe); color: white; min-height: 100px; font-size: 1.3rem; }
+        .btn-retire { background: #222; color: #888; font-size: 0.9rem; margin-top: 30px; }
 
-        /* ロック画面 */
-        #wait-timer { font-size: 4rem; text-align: center; color: var(--accent); font-weight: 900; font-family: 'Courier New', monospace; margin: 30px 0; }
+        #wait-timer { font-size: 3.5rem; text-align: center; color: var(--accent); font-weight: bold; font-family: monospace; margin: 20px 0; }
         
-        /* 任務表示 */
-        .type-badge { display: inline-block; padding: 6px 16px; border-radius: 8px; font-weight: bold; margin-bottom: 20px; font-size: 1.1rem; }
-        .type-wait { background: #004d00; color: #00ff00; border: 1px solid #00ff00; }
-        .type-photo { background: #003366; color: #00d2ff; border: 1px solid #00d2ff; }
-        #task-body { font-size: 1.5rem; font-weight: bold; line-height: 1.4; margin-bottom: 30px; min-height: 100px; text-align: center; color: #fff; }
+        .type-badge { display: inline-block; padding: 5px 15px; border-radius: 5px; font-weight: bold; margin-bottom: 15px; }
+        .type-wait { background: #004d00; color: #0f0; }
+        .type-photo { background: #003366; color: #0cf; }
+        #task-body { font-size: 1.3rem; font-weight: bold; line-height: 1.5; margin-bottom: 25px; min-height: 80px; text-align: center; }
         
-        /* 危険度・ステータス */
-        .danger-bar-bg { width: 100%; height: 14px; background: #222; border-radius: 7px; overflow: hidden; margin: 15px 0; border: 1px solid #333; }
-        #danger-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #00ff00, #ffff00, #ff0000); transition: 0.5s; }
-        .stat-box { background: #1a1a1a; padding: 15px; border-radius: 12px; text-align: center; margin-top: 10px; border: 1px solid #222; }
-        .stat-num { font-size: 1.8rem; font-weight: bold; color: var(--warning); font-family: monospace; }
+        .danger-bar-bg { width: 100%; height: 10px; background: #222; border-radius: 5px; overflow: hidden; margin-bottom: 10px; }
+        #danger-bar-fill { height: 100%; width: 0%; background: #ff003c; transition: 0.5s; }
 
-        /* リザルト */
-        .log-entry { padding: 12px; margin-bottom: 10px; border-radius: 10px; background: #000; font-size: 0.85rem; border-left: 6px solid #444; text-align: left; }
-        .log-ok { border-left-color: var(--safe); }
+        .stat-num { font-size: 1.5rem; font-weight: bold; color: var(--warning); font-family: monospace; }
+        .log-entry { padding: 10px; margin-bottom: 5px; border-radius: 8px; background: #000; font-size: 0.8rem; border-left: 4px solid #444; text-align: left; }
     </style>
 </head>
 <body>
 
     <div class="card" id="scr-setup">
         <h1>露出命令サイト</h1>
-        <label>遂行地点</label>
-        <input type="text" id="in-loc" placeholder="例：〇〇公園、深夜の市街地">
-        <label>開始定刻（設定時間までロック）</label>
+        <label style="font-size: 0.8rem; color: #888;">開始時間（この時間までロック）</label>
         <input type="datetime-local" id="in-time">
-        <label>目標任務数</label>
+        <label style="font-size: 0.8rem; color: #888;">目標数</label>
         <select id="in-target">
-            <option value="5">5任務 (NORMAL)</option>
-            <option value="10" selected>10任務 (HARD)</option>
-            <option value="20">20任務 (LUNATIC)</option>
-            <option value="30">30任務 (HELL)</option>
+            <option value="5">5任務</option>
+            <option value="10" selected>10任務</option>
+            <option value="20">20任務</option>
         </select>
-        <button class="btn-main" onclick="initSystem()">設定を確定しロック</button>
+        <button class="btn-main" onclick="initSystem()">設定を確定</button>
     </div>
 
     <div class="card hidden" id="scr-wait">
-        <h2 style="text-align:center;">ACCESS LOCKED</h2>
+        <h2 style="text-align:center;">LOCKED</h2>
         <div id="wait-timer">00:00:00</div>
         <button id="btn-begin" style="background:#222;color:#555;" disabled onclick="startMission()">未開放</button>
     </div>
@@ -74,81 +61,70 @@
         <div id="task-body"></div>
         
         <div id="phase-prep">
-            <button class="btn-prep" onclick="commence()">準備完了：任務を開始</button>
+            <button class="btn-prep" onclick="commence()">準備完了</button>
         </div>
 
         <div id="phase-action" class="hidden">
             <div id="photo-area" class="hidden">
-                <button class="btn-photo" onclick="document.getElementById('file-in').click()">【証拠を撮影】<br><span style="font-size:0.8rem; font-weight:normal;">撮った瞬間に達成判定が行われます</span></button>
-                <input type="file" id="file-in" accept="image/*" capture="camera" class="hidden" onchange="autoSubmit(this)">
+                <button class="btn-photo" onclick="triggerCamera()">【 証拠を撮影 】</button>
+                <input type="file" id="file-in" accept="image/*" capture="camera" class="hidden">
             </div>
             
             <div id="wait-area" class="hidden">
-                <div id="action-timer" style="font-size: 4rem; text-align: center; color: var(--accent); font-family: monospace;"></div>
+                <div id="action-timer" style="font-size: 3.5rem; text-align: center; color: var(--accent); font-family: monospace;"></div>
             </div>
-
-            <button class="btn-retire" onclick="reportFail()" style="margin-top:40px;">この任務を断念する</button>
+            <button class="btn-retire" onclick="reportFail()">断念する</button>
         </div>
-
-        <div class="stat-box"><span id="stat-comp" class="stat-num">0/0</span></div>
+        <div style="text-align:center; margin-top:15px;"><span id="stat-comp" class="stat-num">0/0</span></div>
     </div>
 
     <div class="card hidden" id="scr-report">
-        <div id="capture-area" style="background:#050505; padding:20px; border-radius:15px;">
-            <h1 style="font-size:1.2rem;">MISSION REPORT</h1>
-            <div id="rep-meta" style="text-align:center; font-size:0.8rem; color:#888; margin-bottom:15px;"></div>
+        <div id="capture-area" style="background:#050505; padding:15px; border-radius:10px;">
+            <h2 style="font-size:1rem; color:var(--accent);">MISSION REPORT</h2>
             <div id="rep-log"></div>
         </div>
-        <button class="btn-main" style="background:#1da1f2;" onclick="shareX()">Xに報告を投稿（画像保存）</button>
-        <button onclick="location.reload()" style="background:#222; margin-top:10px;">TOPに戻る</button>
+        <button class="btn-main" style="background:#1da1f2;" onclick="shareX()">報告を投稿</button>
     </div>
 
 <script>
-// 大量タスクプール
-const tasks = {
-    wait: [
-        {text: "周囲を警戒しながら3分間、その場を動かず留まれ", time: 180},
-        {text: "全裸になり、服をきれいに畳むまでそのままいろ", time: 60},
-        {text: "パンツを頭に被り、そのまま1分間直立不動でいろ", time: 60},
-        {text: "ガードレールに股間を押し付け、1分間耐えろ", time: 60},
-        {text: "茂みに全裸で隠れ、通行人が通り過ぎるまで潜伏せよ", time: 0},
-        {text: "服の上から乳首を弄りながら1分間待機せよ", time: 60},
-        {text: "全裸で5分間オナニーを完遂せよ", time: 300},
-        {text: "下着を脱いで手に持ち、そのまま2分間歩け", time: 120}
-    ],
-    photo: [
-        {text: "現在の露出状態が分かるように、周囲の情景と共に自撮りせよ", time: 0},
-        {text: "全裸でM字開脚している姿を撮影せよ", time: 0},
-        {text: "局部を限界まで露出させ、証拠写真を接写せよ", time: 0},
-        {text: "脱いだ下着を口に咥え、屈辱に耐える表情を撮れ", time: 0},
-        {text: "公共物（自販機や標識）と局部を一緒に撮影せよ", time: 0},
-        {text: "靴だけを履いた全裸の状態で、道路の真ん中で撮影せよ", time: 0},
-        {text: "通行人の背後(10m以内)に忍び寄り、証拠を残せ", time: 0}
-    ]
-};
+// スマホのメモリ対策として、データを外出しせずシンプルに定義
+var tasksWait = [
+    "周囲を警戒しながら3分間、その場を動かず留まれ",
+    "全裸になり、服をきれいに畳むまでそのままいろ",
+    "パンツを頭に被り、そのまま1分間直立不動でいろ",
+    "ガードレールに股間を押し付け、1分間耐えろ",
+    "服の上から乳首を弄りながら1分間待機せよ",
+    "全裸で5分間オナニーを完遂せよ"
+];
+var tasksPhoto = [
+    "露出状態が分かるように、周囲の情景と共に自撮りせよ",
+    "全裸でM字開脚している姿を撮影せよ",
+    "局部を限界まで露出させ、証拠写真を接写せよ",
+    "脱いだ下着を口に咥え、屈辱に耐える表情を撮れ",
+    "公共物（自販機等）と局部を一緒に撮影せよ"
+];
 
-let m = { loc:"", target: 10, danger: 1.0, comp: 0, sec: 0, taskStart: 0, history: [], photos: [], current: null, startTS: 0 };
+var m = { target:10, danger:1.0, comp:0, sec:0, taskStart:0, history:[], current:null, startTS:0, timerInt: null };
 
 function initSystem() {
-    const val = document.getElementById('in-time').value;
-    if(!val) return alert("開始時間を入力してください");
-    m.loc = document.getElementById('in-loc').value || "野外某所";
+    var val = document.getElementById('in-time').value;
+    if(!val) { alert("時間を入力してください"); return; }
     m.target = parseInt(document.getElementById('in-target').value);
     m.startTS = new Date(val).getTime();
     document.getElementById('scr-setup').classList.add('hidden');
     document.getElementById('scr-wait').classList.remove('hidden');
     
-    const lockTick = setInterval(() => {
-        const diff = m.startTS - Date.now();
-        const btn = document.getElementById('btn-begin');
+    setInterval(function(){
+        var diff = m.startTS - Date.now();
+        var btn = document.getElementById('btn-begin');
         if(diff <= 0) {
             document.getElementById('wait-timer').innerText = "READY";
-            btn.style.background = "var(--accent)"; btn.style.color = "white"; btn.disabled = false; btn.innerText = "作戦を開始する";
+            btn.style.background = "#ff003c"; btn.style.color = "#fff"; btn.disabled = false; btn.innerText = "開始";
         } else {
-            const h = Math.floor(diff/3600000).toString().padStart(2,'0');
-            const min = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
-            const s = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
-            document.getElementById('wait-timer').innerText = `${h}:${min}:${s}`;
+            var h = Math.floor(diff/3600000);
+            var min = Math.floor((diff%3600000)/60000);
+            var s = Math.floor((diff%60000)/1000);
+            document.getElementById('wait-timer').innerText = ("0"+h).slice(-2)+":"+("0"+min).slice(-2)+":"+("0"+s).slice(-2);
         }
     }, 1000);
 }
@@ -156,49 +132,47 @@ function initSystem() {
 function startMission() {
     document.getElementById('scr-wait').classList.add('hidden');
     document.getElementById('scr-mission').classList.remove('hidden');
-    setInterval(() => { m.sec++; updateUI(); }, 1000);
+    m.timerInt = setInterval(function(){ m.sec++; updateUI(); }, 1000);
     drawTask();
 }
 
 function drawTask() {
-    const type = Math.random() > 0.5 ? 'wait' : 'photo';
-    const pool = tasks[type];
-    m.current = { ...pool[Math.floor(Math.random() * pool.length)], type: type };
+    var isWait = Math.random() > 0.5;
+    var text = isWait ? tasksWait[Math.floor(Math.random()*tasksWait.length)] : tasksPhoto[Math.floor(Math.random()*tasksPhoto.length)];
+    m.current = { text: text, type: isWait ? 'wait' : 'photo', time: isWait ? 60 : 0 };
     
-    document.getElementById('task-type').innerText = type === 'wait' ? "【忍耐任務】" : "【撮影任務】";
-    document.getElementById('task-type').className = `type-badge type-${type}`;
+    document.getElementById('task-type').innerText = isWait ? "【忍耐任務】" : "【撮影任務】";
+    document.getElementById('task-type').className = "type-badge " + (isWait ? "type-wait" : "type-photo");
     document.getElementById('task-body').innerText = m.current.text;
     document.getElementById('phase-prep').classList.remove('hidden');
     document.getElementById('phase-action').classList.add('hidden');
-    document.getElementById('stat-comp').innerText = `${m.comp}/${m.target}`;
+    document.getElementById('stat-comp').innerText = m.comp + "/" + m.target;
 }
 
 function commence() {
     m.taskStart = m.sec;
     document.getElementById('phase-prep').classList.add('hidden');
     document.getElementById('phase-action').classList.remove('hidden');
-    document.getElementById('photo-area').classList.toggle('hidden', m.current.type !== 'photo');
-    document.getElementById('wait-area').classList.toggle('hidden', m.current.type !== 'wait');
+    document.getElementById('photo-area').className = (m.current.type === 'photo' ? "" : "hidden");
+    document.getElementById('wait-area').className = (m.current.type === 'wait' ? "" : "hidden");
 }
 
-// 撮影オート送信
-function autoSubmit(input) {
-    if(input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = e => {
-            m.photos.push(e.target.result);
-            input.value = ""; 
-            reportSuccess(); 
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
+function triggerCamera() {
+    var fileIn = document.getElementById('file-in');
+    // スマホでの誤作動を防ぐためにイベントを一度クリアしてから設定
+    fileIn.onchange = function() {
+        if(this.files.length > 0) {
+            reportSuccess();
+        }
+    };
+    fileIn.click();
 }
 
 function updateUI() {
     if(m.current && m.current.type === 'wait' && !document.getElementById('phase-action').classList.contains('hidden')) {
-        const rem = m.current.time - (m.sec - m.taskStart);
+        var rem = m.current.time - (m.sec - m.taskStart);
         document.getElementById('action-timer').innerText = Math.max(0, rem) + "s";
-        if(m.current.time > 0 && rem <= 0) reportSuccess();
+        if(rem <= 0) reportSuccess();
     }
     document.getElementById('danger-bar-fill').style.width = (m.danger * 10) + "%";
 }
@@ -211,33 +185,33 @@ function reportSuccess() {
 }
 
 function reportFail() {
-    if(!confirm("この任務を断念しますか？クリア数は増えず危険度が上昇します。")) return;
+    if(!confirm("断念しますか？")) return;
     m.history.push({ text: m.current.text, ok: false });
     m.danger = Math.min(10, m.danger + 2.0);
     if(m.comp >= m.target) finalize(); else drawTask();
 }
 
 function finalize() {
+    clearInterval(m.timerInt);
     document.getElementById('scr-mission').classList.add('hidden');
     document.getElementById('scr-report').classList.remove('hidden');
-    document.getElementById('rep-meta').innerText = `場所: ${m.loc} | クリア: ${m.comp} | 最終危険度: ${m.danger.toFixed(1)}`;
-    
-    m.history.forEach(h => {
-        const d = document.createElement('div');
-        d.className = `log-entry ${h.ok ? 'log-ok' : ''}`;
-        d.innerText = (h.ok ? "✓ SUCCESS: " : "✕ FAILED: ") + h.text;
-        document.getElementById('rep-log').appendChild(d);
+    var log = document.getElementById('rep-log');
+    m.history.forEach(function(h){
+        var d = document.createElement('div');
+        d.className = "log-entry";
+        d.innerText = (h.ok ? "✓ " : "✕ ") + h.text;
+        log.appendChild(d);
     });
 }
 
 function shareX() {
-    html2canvas(document.getElementById('capture-area')).then(canvas => {
-        const link = document.createElement('a');
+    html2canvas(document.querySelector("#capture-area")).then(function(canvas) {
+        var link = document.createElement('a');
         link.download = 'report.png';
         link.href = canvas.toDataURL();
         link.click();
-        const txt = encodeURIComponent(`露出命令サイトで作戦を完遂しました。全${m.comp}任務成功。 #露出命令サイト`);
-        window.open(`https://twitter.com/intent/tweet?text=${txt}`);
+        var txt = encodeURIComponent("露出命令サイトで作戦を完遂しました。 #露出命令サイト");
+        window.open("https://twitter.com/intent/tweet?text=" + txt);
     });
 }
 </script>
