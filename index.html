@@ -3,61 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>露出命令サイト</title>
+    <title>露出命令サイト ver.01</title>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         :root { --bg: #050505; --card: #121212; --text: #ffffff; --accent: #ff003c; --safe: #00d2ff; --prep: #bc13fe; --warning: #ffcc00; }
-        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
-        .card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid #333; width: 100%; max-width: 450px; box-sizing: border-box; margin-top: 10px; }
-        h1 { color: var(--accent); text-align: center; font-size: 1.5rem; margin-bottom: 20px; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        .card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid #333; width: 100%; max-width: 450px; box-sizing: border-box; margin-top: 10px; text-align: center; }
+        h1 { color: var(--accent); font-size: 1.4rem; margin-bottom: 20px; text-shadow: 0 0 10px var(--accent); }
         .hidden { display: none !important; }
         
-        input, select { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #444; background: #000; color: #fff; font-size: 1rem; box-sizing: border-box; -webkit-appearance: none; }
+        input, select { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #444; background: #000; color: #fff; font-size: 1rem; box-sizing: border-box; }
         
-        button { width: 100%; padding: 20px; border-radius: 15px; border: none; font-weight: bold; cursor: pointer; font-size: 1.1rem; margin-top: 10px; transition: 0.2s; -webkit-tap-highlight-color: transparent; }
+        button { width: 100%; padding: 20px; border-radius: 15px; border: none; font-weight: bold; cursor: pointer; font-size: 1.1rem; margin-top: 10px; transition: 0.2s; }
         .btn-main { background: var(--accent); color: white; }
         .btn-prep { background: var(--prep); color: white; }
-        .btn-photo { background: var(--safe); color: white; min-height: 100px; font-size: 1.3rem; }
-        .btn-retire { background: #222; color: #888; font-size: 0.9rem; margin-top: 30px; }
+        .btn-photo { background: var(--safe); color: white; min-height: 80px; }
+        .btn-retire { background: #222; color: #888; font-size: 0.9rem; margin-top: 20px; }
 
-        #wait-timer { font-size: 3.5rem; text-align: center; color: var(--accent); font-weight: bold; font-family: monospace; margin: 20px 0; }
-        
-        .type-badge { display: inline-block; padding: 5px 15px; border-radius: 5px; font-weight: bold; margin-bottom: 15px; }
+        #wait-timer { font-size: 3.5rem; color: var(--accent); font-weight: bold; font-family: monospace; margin: 20px 0; }
+        .type-badge { display: inline-block; padding: 5px 15px; border-radius: 5px; font-weight: bold; margin-bottom: 15px; font-size: 0.9rem; }
         .type-wait { background: #004d00; color: #0f0; }
         .type-photo { background: #003366; color: #0cf; }
-        #task-body { font-size: 1.3rem; font-weight: bold; line-height: 1.5; margin-bottom: 25px; min-height: 80px; text-align: center; }
+        #task-body { font-size: 1.2rem; font-weight: bold; line-height: 1.5; margin-bottom: 20px; min-height: 60px; }
         
-        .danger-bar-bg { width: 100%; height: 10px; background: #222; border-radius: 5px; overflow: hidden; margin-bottom: 10px; }
-        #danger-bar-fill { height: 100%; width: 0%; background: #ff003c; transition: 0.5s; }
-
-        .stat-num { font-size: 1.5rem; font-weight: bold; color: var(--warning); font-family: monospace; }
-        .log-entry { padding: 10px; margin-bottom: 5px; border-radius: 8px; background: #000; font-size: 0.8rem; border-left: 4px solid #444; text-align: left; }
+        #preview-img { width: 100%; border-radius: 10px; margin-top: 15px; border: 2px solid var(--safe); }
+        .danger-bar-bg { width: 100%; height: 8px; background: #222; border-radius: 4px; overflow: hidden; margin-bottom: 15px; }
+        #danger-bar-fill { height: 100%; width: 0%; background: var(--accent); transition: 0.5s; }
+        .stat-num { font-size: 1.3rem; font-weight: bold; color: var(--warning); font-family: monospace; }
+        .log-entry { padding: 8px; margin-bottom: 5px; border-radius: 5px; background: #000; font-size: 0.75rem; border-left: 4px solid #444; text-align: left; }
     </style>
 </head>
 <body>
 
     <div class="card" id="scr-setup">
-        <h1>露出命令サイト</h1>
-        <label style="font-size: 0.8rem; color: #888;">開始時間（この時間までロック）</label>
+        <h1>露出命令サイト ver.01</h1>
+        <label style="font-size: 0.8rem; color: #888;">開始時間</label>
         <input type="datetime-local" id="in-time">
-        <label style="font-size: 0.8rem; color: #888;">目標数</label>
+        <label style="font-size: 0.8rem; color: #888;">目標任務数</label>
         <select id="in-target">
             <option value="5">5任務</option>
             <option value="10" selected>10任務</option>
             <option value="20">20任務</option>
         </select>
-        <button class="btn-main" onclick="initSystem()">設定を確定</button>
+        <button class="btn-main" onclick="initSystem()">設定を確定してロック</button>
     </div>
 
     <div class="card hidden" id="scr-wait">
-        <h2 style="text-align:center;">LOCKED</h2>
+        <h2>ACCESS LOCKED</h2>
         <div id="wait-timer">00:00:00</div>
         <button id="btn-begin" style="background:#222;color:#555;" disabled onclick="startMission()">未開放</button>
     </div>
 
     <div class="card hidden" id="scr-mission">
         <div class="danger-bar-bg"><div id="danger-bar-fill"></div></div>
-        <div style="text-align:center;"><span id="task-type" class="type-badge"></span></div>
+        <span id="task-type" class="type-badge"></span>
         <div id="task-body"></div>
         
         <div id="phase-prep">
@@ -66,34 +65,43 @@
 
         <div id="phase-action" class="hidden">
             <div id="photo-area" class="hidden">
-                <button class="btn-photo" onclick="triggerCamera()">【 証拠を撮影 】</button>
-                <input type="file" id="file-in" accept="image/*" capture="camera" class="hidden">
+                <button class="btn-photo" onclick="document.getElementById('file-in').click()">【 証拠を撮影する 】</button>
+                <input type="file" id="file-in" accept="image/*" capture="camera" class="hidden" onchange="previewPhoto(this)">
+                
+                <div id="photo-confirm" class="hidden">
+                    <img id="preview-img" src="">
+                    <p style="font-size:0.8rem; color:var(--safe);">撮影成功。この写真を提出しますか？</p>
+                    <button class="btn-main" onclick="reportSuccess()">証拠を提出して達成</button>
+                    <button style="background:#333; color:#fff;" onclick="document.getElementById('file-in').click()">撮り直す</button>
+                </div>
             </div>
             
             <div id="wait-area" class="hidden">
-                <div id="action-timer" style="font-size: 3.5rem; text-align: center; color: var(--accent); font-family: monospace;"></div>
+                <div id="action-timer" style="font-size: 3.5rem; color: var(--accent); font-family: monospace;"></div>
+                <p style="font-size:0.8rem; color:#888;">そのまま待機せよ</p>
             </div>
-            <button class="btn-retire" onclick="reportFail()">断念する</button>
+            
+            <button class="btn-retire" id="btn-giveup" onclick="reportFail()">任務を断念する</button>
         </div>
-        <div style="text-align:center; margin-top:15px;"><span id="stat-comp" class="stat-num">0/0</span></div>
+        <div style="margin-top:15px;"><span id="stat-comp" class="stat-num">0/0</span></div>
     </div>
 
     <div class="card hidden" id="scr-report">
         <div id="capture-area" style="background:#050505; padding:15px; border-radius:10px;">
-            <h2 style="font-size:1rem; color:var(--accent);">MISSION REPORT</h2>
+            <h2 style="font-size:1rem; color:var(--accent); margin-top:0;">MISSION REPORT</h2>
             <div id="rep-log"></div>
         </div>
-        <button class="btn-main" style="background:#1da1f2;" onclick="shareX()">報告を投稿</button>
+        <button class="btn-main" style="background:#1da1f2;" onclick="shareX()">Xにリザルトを投稿</button>
+        <button onclick="location.reload()" style="background:#222; margin-top:10px;">TOPへ</button>
     </div>
 
 <script>
-// スマホのメモリ対策として、データを外出しせずシンプルに定義
 var tasksWait = [
     "周囲を警戒しながら3分間、その場を動かず留まれ",
     "全裸になり、服をきれいに畳むまでそのままいろ",
     "パンツを頭に被り、そのまま1分間直立不動でいろ",
     "ガードレールに股間を押し付け、1分間耐えろ",
-    "服の上から乳首を弄りながら1分間待機せよ",
+    "茂みに全裸で隠れ、通行人が一人通り過ぎるまで潜伏せよ",
     "全裸で5分間オナニーを完遂せよ"
 ];
 var tasksPhoto = [
@@ -101,7 +109,7 @@ var tasksPhoto = [
     "全裸でM字開脚している姿を撮影せよ",
     "局部を限界まで露出させ、証拠写真を接写せよ",
     "脱いだ下着を口に咥え、屈辱に耐える表情を撮れ",
-    "公共物（自販機等）と局部を一緒に撮影せよ"
+    "公共物（自販機や標識）と局部を一緒に撮影せよ"
 ];
 
 var m = { target:10, danger:1.0, comp:0, sec:0, taskStart:0, history:[], current:null, startTS:0, timerInt: null };
@@ -119,7 +127,7 @@ function initSystem() {
         var btn = document.getElementById('btn-begin');
         if(diff <= 0) {
             document.getElementById('wait-timer').innerText = "READY";
-            btn.style.background = "#ff003c"; btn.style.color = "#fff"; btn.disabled = false; btn.innerText = "開始";
+            btn.style.background = "#ff003c"; btn.style.color = "#fff"; btn.disabled = false; btn.innerText = "作戦開始";
         } else {
             var h = Math.floor(diff/3600000);
             var min = Math.floor((diff%3600000)/60000);
@@ -139,13 +147,14 @@ function startMission() {
 function drawTask() {
     var isWait = Math.random() > 0.5;
     var text = isWait ? tasksWait[Math.floor(Math.random()*tasksWait.length)] : tasksPhoto[Math.floor(Math.random()*tasksPhoto.length)];
-    m.current = { text: text, type: isWait ? 'wait' : 'photo', time: isWait ? 60 : 0 };
+    m.current = { text: text, type: isWait ? 'wait' : 'photo', time: isWait ? 120 : 0 };
     
     document.getElementById('task-type').innerText = isWait ? "【忍耐任務】" : "【撮影任務】";
     document.getElementById('task-type').className = "type-badge " + (isWait ? "type-wait" : "type-photo");
     document.getElementById('task-body').innerText = m.current.text;
     document.getElementById('phase-prep').classList.remove('hidden');
     document.getElementById('phase-action').classList.add('hidden');
+    document.getElementById('photo-confirm').classList.add('hidden');
     document.getElementById('stat-comp').innerText = m.comp + "/" + m.target;
 }
 
@@ -157,15 +166,17 @@ function commence() {
     document.getElementById('wait-area').className = (m.current.type === 'wait' ? "" : "hidden");
 }
 
-function triggerCamera() {
-    var fileIn = document.getElementById('file-in');
-    // スマホでの誤作動を防ぐためにイベントを一度クリアしてから設定
-    fileIn.onchange = function() {
-        if(this.files.length > 0) {
-            reportSuccess();
-        }
-    };
-    fileIn.click();
+function previewPhoto(input) {
+    if(input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview-img').src = e.target.result;
+            document.getElementById('photo-confirm').classList.remove('hidden');
+            document.querySelector('.btn-photo').classList.add('hidden');
+            document.getElementById('btn-giveup').classList.add('hidden'); // 確認中は断念を隠す
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
 }
 
 function updateUI() {
@@ -181,11 +192,16 @@ function reportSuccess() {
     m.history.push({ text: m.current.text, ok: true });
     m.comp++;
     m.danger = Math.min(10, m.danger + 0.5);
+    
+    // 画面リセット
+    document.querySelector('.btn-photo').classList.remove('hidden');
+    document.getElementById('btn-giveup').classList.remove('hidden');
+    
     if(m.comp >= m.target) finalize(); else drawTask();
 }
 
 function reportFail() {
-    if(!confirm("断念しますか？")) return;
+    if(!confirm("この任務を断念しますか？")) return;
     m.history.push({ text: m.current.text, ok: false });
     m.danger = Math.min(10, m.danger + 2.0);
     if(m.comp >= m.target) finalize(); else drawTask();
@@ -210,7 +226,7 @@ function shareX() {
         link.download = 'report.png';
         link.href = canvas.toDataURL();
         link.click();
-        var txt = encodeURIComponent("露出命令サイトで作戦を完遂しました。 #露出命令サイト");
+        var txt = encodeURIComponent("露出命令サイト ver.01 で任務を完遂。 #露出命令サイト");
         window.open("https://twitter.com/intent/tweet?text=" + txt);
     });
 }
